@@ -1,6 +1,6 @@
 {
   "name": "whmcs-mcp-server",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP Server for managing WHMCS installations - clients, products, billing, tickets, domains, and integrations",
   "type": "module",
   "main": "dist/index.js",
@@ -15,7 +15,9 @@
     "test": "tsx src/test.ts",
     "lint": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "docker:build": "docker build -t whmcs-mcp-server .",
+    "docker:run": "docker run -it --rm --env-file .env whmcs-mcp-server"
   },
   "keywords": [
     "whmcs",
@@ -23,6 +25,7 @@
     "model-context-protocol",
     "hosting",
     "billing",
+    "docker",
     "automation",
     "api",
     "web-hosting",

@@ -1,6 +1,7 @@
 # WHMCS MCP Server
 
 [![CI](https://github.com/scarecr0w12/whmcs-mcp-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/scarecr0w12/whmcs-mcp-tool/actions/workflows/ci.yml)
+[![Docker](https://github.com/scarecr0w12/whmcs-mcp-tool/actions/workflows/docker.yml/badge.svg)](https://github.com/scarecr0w12/whmcs-mcp-tool/actions/workflows/docker.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-1.0-green.svg)](https://modelcontextprotocol.io/)
@@ -12,6 +13,7 @@ A Model Context Protocol (MCP) server for managing WHMCS (Web Host Manager Compl
 
 - [Configuration Guide](docs/CONFIGURATION.md) - Detailed setup and configuration instructions
 - [API Reference](docs/API_REFERENCE.md) - Complete tool documentation with parameters
+- [Docker Guide](docs/DOCKER.md) - Container deployment instructions
 - [Changelog](CHANGELOG.md) - Version history and release notes
 - [Contributing](CONTRIBUTING.md) - Guidelines for contributors
 
@@ -103,9 +105,23 @@ Real-time data endpoints for instant access:
 
 ## 🔧 Installation
 
+### Option 1: Docker (Recommended)
+
+```bash
+docker run -it --rm \
+  -e WHMCS_API_URL="https://billing.example.com/" \
+  -e WHMCS_API_IDENTIFIER="your-identifier" \
+  -e WHMCS_API_SECRET="your-secret" \
+  ghcr.io/scarecr0w12/whmcs-mcp-tool:latest
+```
+
+See [Docker Guide](docs/DOCKER.md) for detailed Docker deployment instructions.
+
+### Option 2: From Source
+
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/scarecr0w12/whmcs-mcp-tool.git
    cd whmcs-mcp-tool
    ```
 

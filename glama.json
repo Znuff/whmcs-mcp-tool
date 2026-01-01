@@ -13,8 +13,10 @@
     "client-management",
     "domain-management",
     "support-tickets",
-    "automation"
+    "automation",
+    "docker"
   ],
+  "docker_image": "ghcr.io/scarecr0w12/whmcs-mcp-tool:latest",
   "environment_variables": [
     {
       "name": "WHMCS_API_URL",

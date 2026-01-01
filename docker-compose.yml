@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  whmcs-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whmcs-mcp-server
+    restart: unless-stopped
+    environment:
+      - WHMCS_API_URL=${WHMCS_API_URL}
+      - WHMCS_API_IDENTIFIER=${WHMCS_API_IDENTIFIER}
+      - WHMCS_API_SECRET=${WHMCS_API_SECRET}
+      - WHMCS_ACCESS_KEY=${WHMCS_ACCESS_KEY:-}
+    # For stdio-based MCP servers, we need stdin/stdout
+    stdin_open: true
+    tty: true
+    # Optional: Add network restrictions for security
+    # networks:
+    #   - mcp-network
+
+# Optional: Define custom network
+# networks:
+#   mcp-network:
+#     driver: bridge

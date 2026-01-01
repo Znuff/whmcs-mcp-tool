@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-01
+
+### Added
+
+#### Docker Support
+- Multi-stage Dockerfile for optimized production images
+- Docker Compose configuration for easy deployment
+- GitHub Actions workflow for automated Docker builds
+- Multi-platform support (linux/amd64, linux/arm64)
+- Container published to GitHub Container Registry (ghcr.io)
+- Docker deployment documentation
+
 ## [1.1.0] - 2026-01-01
 
 ### Added
