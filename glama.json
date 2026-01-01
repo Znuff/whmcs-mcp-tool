@@ -1,0 +1,40 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "name": "WHMCS MCP Server",
+  "description": "A Model Context Protocol server for managing WHMCS installations - clients, products, billing, tickets, domains, and integrations",
+  "maintainers": [
+    "scarecr0w12"
+  ],
+  "tags": [
+    "whmcs",
+    "billing",
+    "hosting",
+    "web-hosting",
+    "client-management",
+    "domain-management",
+    "support-tickets",
+    "automation"
+  ],
+  "environment_variables": [
+    {
+      "name": "WHMCS_API_URL",
+      "description": "Your WHMCS installation URL (e.g., https://billing.example.com/)",
+      "required": true
+    },
+    {
+      "name": "WHMCS_API_IDENTIFIER",
+      "description": "API credential identifier from WHMCS",
+      "required": true
+    },
+    {
+      "name": "WHMCS_API_SECRET",
+      "description": "API credential secret from WHMCS",
+      "required": true
+    },
+    {
+      "name": "WHMCS_ACCESS_KEY",
+      "description": "Optional API access key for additional security",
+      "required": false
+    }
+  ]
+}
