@@ -9,6 +9,10 @@
 
 A Model Context Protocol (MCP) server for managing WHMCS (Web Host Manager Complete Solution) installations. This server provides comprehensive tools for managing clients, products, billing, support tickets, domains, and more through the WHMCS API.
 
+<a href="https://glama.ai/mcp/servers/@scarecr0w12/whmcs-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@scarecr0w12/whmcs-mcp-server/badge" />
+</a>
+
 ## 📚 Documentation
 
 - [Configuration Guide](docs/CONFIGURATION.md) - Detailed setup and configuration instructions
