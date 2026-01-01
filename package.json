@@ -33,12 +33,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/scarecr0w12/whmcs-mcp-tool.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/scarecr0w12/whmcs-mcp-tool/issues"
   },
-  "homepage": "",
+  "homepage": "https://github.com/scarecr0w12/whmcs-mcp-tool#readme",
   "engines": {
     "node": ">=18.0.0"
   },
