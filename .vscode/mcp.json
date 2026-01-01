@@ -1,0 +1,15 @@
+{
+    "servers": {
+        "whmcs-mcp-server": {
+            "type": "stdio",
+            "command": "node",
+            "args": ["dist/index.js"],
+            "env": {
+                "WHMCS_API_URL": "${env:WHMCS_API_URL}",
+                "WHMCS_API_IDENTIFIER": "${env:WHMCS_API_IDENTIFIER}",
+                "WHMCS_API_SECRET": "${env:WHMCS_API_SECRET}",
+                "WHMCS_ACCESS_KEY": "${env:WHMCS_ACCESS_KEY}"
+            }
+        }
+    }
+}

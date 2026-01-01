@@ -1,0 +1,61 @@
+{
+  "name": "whmcs-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for managing WHMCS installations - clients, products, billing, tickets, domains, and integrations",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "whmcs-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "watch": "tsc --watch",
+    "test": "tsx src/test.ts",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "whmcs",
+    "mcp",
+    "model-context-protocol",
+    "hosting",
+    "billing",
+    "automation",
+    "api",
+    "web-hosting",
+    "support-tickets",
+    "domain-management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "dotenv": "^17.2.3",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
