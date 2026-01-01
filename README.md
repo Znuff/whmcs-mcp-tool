@@ -17,6 +17,30 @@ A Model Context Protocol (MCP) server for managing WHMCS (Web Host Manager Compl
 
 ## ✨ Features
 
+### 🤖 AI-Powered Prompts
+Pre-built prompt templates for common WHMCS workflows:
+- **Client Onboarding** - Guided new client setup
+- **Ticket Response** - Generate professional support responses
+- **Revenue Report** - Comprehensive financial analysis
+- **Client Health Check** - Account status assessment
+- **Bulk Invoice Reminder** - Automated payment follow-up
+- **Domain Expiry Audit** - Proactive domain management
+- **New Product Setup** - Product configuration guidance
+- **Fraud Investigation** - Security analysis workflow
+
+### 📊 Live Resources
+Real-time data endpoints for instant access:
+- System statistics (`whmcs://stats`)
+- Products catalog (`whmcs://products`)
+- Support departments (`whmcs://support/departments`)
+- Payment methods (`whmcs://payment-methods`)
+- Currencies (`whmcs://currencies`)
+- Servers (`whmcs://servers`)
+- TLD pricing (`whmcs://tld-pricing`)
+- Promotions (`whmcs://promotions`)
+- Ticket statuses (`whmcs://support/statuses`)
+- Admin to-do items (`whmcs://admin/todo`)
+
 ### Client Management
 - List, search, and filter clients
 - Get detailed client information

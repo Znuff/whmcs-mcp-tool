@@ -1287,6 +1287,638 @@ server.registerTool(
 );
 
 // ========================================
+// PROMPTS
+// ========================================
+
+server.registerPrompt(
+    'client-onboarding',
+    {
+        title: 'Client Onboarding Assistant',
+        description: 'Guide through onboarding a new client including account setup, product assignment, and welcome communication',
+        argsSchema: {
+            clientName: z.string().describe('Name of the new client'),
+            email: z.string().describe('Client email address'),
+            products: z.string().optional().describe('Comma-separated list of products to assign'),
+        },
+    },
+    ({ clientName, email, products }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `I need to onboard a new client with the following details:
+
+**Client Name:** ${clientName}
+**Email:** ${email}
+${products ? `**Products to Assign:** ${products}` : ''}
+
+Please help me:
+1. Create the client account in WHMCS using whmcs_add_client
+2. Set up any requested products/services
+3. Generate a welcome invoice if needed
+4. Suggest a welcome email template
+
+Walk me through each step and confirm before proceeding.`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'ticket-response',
+    {
+        title: 'Support Ticket Response',
+        description: 'Generate a professional response to a support ticket',
+        argsSchema: {
+            ticketId: z.string().describe('The ticket ID to respond to'),
+            issueType: z.enum(['billing', 'technical', 'sales', 'general']).describe('Type of issue'),
+            tone: z.enum(['formal', 'friendly', 'apologetic']).optional().describe('Tone of the response'),
+        },
+    },
+    ({ ticketId, issueType, tone = 'friendly' }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `Please help me respond to support ticket #${ticketId}.
+
+First, use whmcs_get_ticket to retrieve the ticket details.
+
+Then craft a ${tone} response appropriate for a ${issueType} issue that:
+- Acknowledges the customer's concern
+- Provides a clear solution or next steps
+- Offers additional assistance if needed
+
+After reviewing the ticket, draft the response and I'll confirm before sending with whmcs_add_ticket_reply.`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'revenue-report',
+    {
+        title: 'Revenue Analysis Report',
+        description: 'Generate a comprehensive revenue analysis from WHMCS data',
+        argsSchema: {
+            period: z.enum(['today', 'week', 'month', 'year']).describe('Time period for analysis'),
+            includeForecasting: z.boolean().optional().describe('Include revenue forecasting'),
+        },
+    },
+    ({ period, includeForecasting }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `Generate a revenue analysis report for the ${period}.
+
+Please gather the following data:
+1. Use whmcs_get_stats to get overall system statistics
+2. Use whmcs_get_transactions to analyze payment transactions
+3. Use whmcs_get_invoices to review invoice status
+
+Provide insights on:
+- Total revenue collected
+- Outstanding invoices
+- Payment method breakdown
+- Top revenue-generating products
+${includeForecasting ? '- Revenue forecast for next period based on trends' : ''}
+
+Present the data in a clear, executive summary format.`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'client-health-check',
+    {
+        title: 'Client Account Health Check',
+        description: 'Perform a comprehensive health check on a client account',
+        argsSchema: {
+            clientId: z.string().describe('Client ID to analyze'),
+        },
+    },
+    ({ clientId }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `Perform a comprehensive health check on client #${clientId}.
+
+Please gather and analyze:
+1. Use whmcs_get_client_details with stats=true for client overview
+2. Use whmcs_get_client_products to review active services
+3. Use whmcs_get_client_domains to check domain status
+4. Use whmcs_get_invoices filtered by clientid to review payment history
+5. Use whmcs_get_tickets filtered by clientid to review support history
+
+Provide a summary including:
+- Account standing (good, at-risk, churning)
+- Services overview and renewal dates
+- Payment history and any overdue amounts
+- Recent support interactions
+- Recommendations for account management`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'bulk-invoice-reminder',
+    {
+        title: 'Bulk Invoice Reminder',
+        description: 'Send payment reminders to clients with overdue invoices',
+        argsSchema: {
+            daysOverdue: z.string().describe('Minimum days overdue to include'),
+        },
+    },
+    ({ daysOverdue }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `Help me send payment reminders to clients with invoices overdue by ${daysOverdue}+ days.
+
+Steps:
+1. Use whmcs_get_invoices with status=Overdue to find overdue invoices
+2. Filter for invoices overdue by at least ${daysOverdue} days
+3. Group by client to avoid multiple emails to the same client
+4. For each client, use whmcs_send_email to send a payment reminder
+
+Before sending any emails, show me:
+- List of clients to contact
+- Total amount outstanding per client
+- Number of overdue invoices per client
+
+I'll confirm before you proceed with sending reminders.`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'domain-expiry-audit',
+    {
+        title: 'Domain Expiry Audit',
+        description: 'Audit domains expiring soon and take action',
+        argsSchema: {
+            daysUntilExpiry: z.string().describe('Days until expiry to check'),
+        },
+    },
+    ({ daysUntilExpiry }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `Audit all domains expiring within the next ${daysUntilExpiry} days.
+
+Please:
+1. Use whmcs_get_clients to get all clients
+2. For each client, use whmcs_get_client_domains to check domain expiry dates
+3. Compile a list of domains expiring within ${daysUntilExpiry} days
+
+Report should include:
+- Domain name
+- Client name and contact
+- Expiry date
+- Auto-renew status
+- Recommended action (renew, let expire, contact client)
+
+After the audit, I may ask you to:
+- Send renewal reminders via whmcs_send_email
+- Process renewals via whmcs_renew_domain`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'new-product-setup',
+    {
+        title: 'New Product Setup Guide',
+        description: 'Guide for setting up a new product or service in WHMCS',
+        argsSchema: {
+            productType: z.enum(['hosting', 'domain', 'addon', 'other']).describe('Type of product'),
+            productName: z.string().describe('Name of the new product'),
+        },
+    },
+    ({ productType, productName }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `I want to set up a new ${productType} product called "${productName}" in WHMCS.
+
+Please help me:
+1. First, use whmcs_get_product_groups to see existing product groups
+2. Advise on pricing strategy based on existing products (whmcs_get_products)
+3. Recommend appropriate billing cycles
+4. Suggest relevant configurable options
+
+For ${productType === 'hosting' ? 'hosting products, also consider server assignment (whmcs_get_servers)' : productType === 'domain' ? 'domain products, review TLD pricing (whmcs_get_tld_pricing)' : 'this product type, consider any module integrations needed'}
+
+Note: Product creation itself must be done in WHMCS admin, but I can help you:
+- Plan the product configuration
+- Set up associated pricing
+- Create promotional codes (if needed)`,
+                },
+            },
+        ],
+    })
+);
+
+server.registerPrompt(
+    'fraud-investigation',
+    {
+        title: 'Fraud Investigation',
+        description: 'Investigate a potentially fraudulent order or client',
+        argsSchema: {
+            orderId: z.string().optional().describe('Order ID to investigate'),
+            clientId: z.string().optional().describe('Client ID to investigate'),
+        },
+    },
+    ({ orderId, clientId }) => ({
+        messages: [
+            {
+                role: 'user',
+                content: {
+                    type: 'text',
+                    text: `I need to investigate a potentially fraudulent ${orderId ? `order #${orderId}` : `client #${clientId}`}.
+
+Please help me gather evidence:
+${orderId ? `1. Use whmcs_get_orders to get order details for order #${orderId}` : ''}
+${clientId ? `1. Use whmcs_get_client_details to review client #${clientId}` : ''}
+2. Check the activity log (whmcs_get_activity_log) for suspicious patterns
+3. Review any related support tickets (whmcs_get_tickets)
+4. Check payment history and chargebacks (whmcs_get_transactions)
+
+Red flags to look for:
+- Mismatched billing/service locations
+- Multiple failed payment attempts
+- Rapid order submissions
+- Known proxy/VPN usage
+- Disposable email addresses
+
+Based on findings, recommend action:
+- Approve order
+- Request verification
+- Mark as fraudulent (whmcs_fraud_order)
+- Suspend account`,
+                },
+            },
+        ],
+    })
+);
+
+// ========================================
+// RESOURCES
+// ========================================
+
+server.registerResource(
+    'whmcs-stats',
+    'whmcs://stats',
+    {
+        title: 'WHMCS Statistics',
+        description: 'Current WHMCS system statistics including client counts, revenue, and service status',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const stats = await whmcsClient.getStats();
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(stats, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch WHMCS stats' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-products',
+    'whmcs://products',
+    {
+        title: 'WHMCS Products Catalog',
+        description: 'List of all products and services available in WHMCS',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const products = await whmcsClient.getProducts({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(products, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch products' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-support-departments',
+    'whmcs://support/departments',
+    {
+        title: 'Support Departments',
+        description: 'List of all support departments configured in WHMCS',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const departments = await whmcsClient.getSupportDepartments({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(departments, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch support departments' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-payment-methods',
+    'whmcs://payment-methods',
+    {
+        title: 'Payment Methods',
+        description: 'Available payment methods configured in WHMCS',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const methods = await whmcsClient.getPaymentMethods();
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(methods, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch payment methods' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-currencies',
+    'whmcs://currencies',
+    {
+        title: 'Currencies',
+        description: 'Currency configuration in WHMCS',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const currencies = await whmcsClient.getCurrencies();
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(currencies, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch currencies' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-servers',
+    'whmcs://servers',
+    {
+        title: 'Configured Servers',
+        description: 'List of servers configured in WHMCS for service provisioning',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const servers = await whmcsClient.getServers({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(servers, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch servers' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-admin-users',
+    'whmcs://admin-users',
+    {
+        title: 'Admin Users',
+        description: 'List of administrator users in WHMCS',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const admins = await whmcsClient.getAdminUsers();
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(admins, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch admin users' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-tld-pricing',
+    'whmcs://tld-pricing',
+    {
+        title: 'TLD Pricing',
+        description: 'Domain TLD pricing information',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const pricing = await whmcsClient.getTLDPricing({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(pricing, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch TLD pricing' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-promotions',
+    'whmcs://promotions',
+    {
+        title: 'Active Promotions',
+        description: 'List of promotional codes and discounts',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const promotions = await whmcsClient.getPromotions({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(promotions, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch promotions' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-ticket-statuses',
+    'whmcs://support/statuses',
+    {
+        title: 'Ticket Statuses',
+        description: 'Available support ticket statuses',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const statuses = await whmcsClient.getSupportStatuses({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(statuses, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch ticket statuses' }),
+                }],
+            };
+        }
+    }
+);
+
+server.registerResource(
+    'whmcs-todo-items',
+    'whmcs://admin/todo',
+    {
+        title: 'Admin To-Do Items',
+        description: 'Administrative to-do items and tasks',
+        mimeType: 'application/json',
+    },
+    async (uri) => {
+        try {
+            const todos = await whmcsClient.getToDoItems({});
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify(todos, null, 2),
+                }],
+            };
+        } catch (error) {
+            return {
+                contents: [{
+                    uri: uri.href,
+                    mimeType: 'application/json',
+                    text: JSON.stringify({ error: 'Failed to fetch to-do items' }),
+                }],
+            };
+        }
+    }
+);
+
+// ========================================
 // START SERVER
 // ========================================
 

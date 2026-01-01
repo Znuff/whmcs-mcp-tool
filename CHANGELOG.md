@@ -1,4 +1,4 @@
-# Changelog
+0# Changelog
 
 All notable changes to the WHMCS MCP Server will be documented in this file.
 
@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-01-01
+
+### Added
+
+#### Prompts
+- `client-onboarding` - Guided workflow for onboarding new clients
+- `ticket-response` - Generate professional support ticket responses
+- `revenue-report` - Comprehensive revenue analysis report generation
+- `client-health-check` - Full account health assessment
+- `bulk-invoice-reminder` - Bulk payment reminder workflow
+- `domain-expiry-audit` - Proactive domain expiration management
+- `new-product-setup` - Product configuration guidance
+- `fraud-investigation` - Security and fraud analysis workflow
+
+#### Resources
+- `whmcs://stats` - Real-time WHMCS system statistics
+- `whmcs://products` - Products catalog
+- `whmcs://support/departments` - Support departments list
+- `whmcs://payment-methods` - Available payment methods
+- `whmcs://currencies` - Currency configuration
+- `whmcs://servers` - Configured servers for provisioning
+- `whmcs://admin-users` - Administrator users
+- `whmcs://tld-pricing` - Domain TLD pricing
+- `whmcs://promotions` - Active promotional codes
+- `whmcs://support/statuses` - Ticket status configuration
+- `whmcs://admin/todo` - Admin to-do items
 
 ## [1.0.0] - 2026-01-01
 
