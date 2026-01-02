@@ -4,6 +4,9 @@
   "description": "MCP Server for managing WHMCS installations - clients, products, billing, tickets, domains, and integrations",
   "type": "module",
   "main": "dist/index.js",
+  "authors": [
+    "scarecr0w12"
+  ],
   "bin": {
     "whmcs-mcp-server": "./dist/index.js"
   },
