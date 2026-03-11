@@ -506,6 +506,25 @@ server.registerTool(
 );
 
 server.registerTool(
+    'whmcs_add_ticket_note',
+    {
+        title: 'Add Ticket Note',
+        description: 'Add an admin-only internal note to a ticket. Notes are not visible to the client and do not trigger email notifications.',
+        inputSchema: {
+            ticketid: z.number().describe('Ticket ID to add the note to'),
+            message: z.string().describe('The note content'),
+            markdown: z.boolean().optional().describe('Whether the message contains markdown formatting'),
+        },
+    },
+    async (params) => {
+        const result = await whmcsClient.addTicketNote(params);
+        return {
+            content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+        };
+    }
+);
+
+server.registerTool(
     'whmcs_update_ticket',
     {
         title: 'Update Ticket',

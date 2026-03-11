@@ -745,6 +745,19 @@ export class WhmcsApiClient {
     }
 
     /**
+     * Add an admin-only internal note to a ticket
+     * Notes are not visible to clients and do not trigger email notifications
+     */
+    async addTicketNote(params: {
+        ticketid: number;
+        message: string;
+        markdown?: boolean;
+        attachments?: Array<{ name: string; data: string }>;
+    }) {
+        return this.call<WhmcsApiResponse>('AddTicketNote', params);
+    }
+
+    /**
      * Update ticket status
      */
     async updateTicket(params: {

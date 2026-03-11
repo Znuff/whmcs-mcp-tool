@@ -17,6 +17,11 @@
     "docker"
   ],
   "docker_image": "ghcr.io/scarecr0w12/whmcs-mcp-tool:latest",
+  "capabilities": {
+    "tools": true,
+    "prompts": true,
+    "resources": true
+  },
   "environment_variables": [
     {
       "name": "WHMCS_API_URL",
