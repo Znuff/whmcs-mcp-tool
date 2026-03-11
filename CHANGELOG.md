@@ -1,4 +1,4 @@
-0# Changelog
+# Changelog
 
 All notable changes to the WHMCS MCP Server will be documented in this file.
 
@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Support Tickets
 - `whmcs_add_ticket_note` - Add an admin-only internal note to a ticket (not visible to client, no email notification)
+
+### Security
+- Upgrade `@modelcontextprotocol/sdk` to fix ReDoS and cross-client data leak vulnerabilities
+- Upgrade `hono` to fix JWT algorithm confusion, XSS, cache deception, IP spoofing, prototype pollution, and other issues
+- Upgrade `@hono/node-server` to fix authorization bypass via encoded slashes
+- Upgrade `ajv` to fix ReDoS with `$data` option
+- Upgrade `qs` to fix arrayLimit bypass denial-of-service
 
 ## [1.2.0] - 2026-01-01
 
@@ -149,5 +156,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable configuration via dotenv
 - VS Code MCP integration configuration
 
-[Unreleased]: https://github.com/yourusername/whmcs-mcp-server/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/yourusername/whmcs-mcp-server/releases/tag/v1.0.0
+[Unreleased]: https://github.com/scarecr0w12/whmcs-mcp-tool/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/scarecr0w12/whmcs-mcp-tool/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/scarecr0w12/whmcs-mcp-tool/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/scarecr0w12/whmcs-mcp-tool/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/scarecr0w12/whmcs-mcp-tool/releases/tag/v1.0.0
