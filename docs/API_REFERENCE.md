@@ -397,6 +397,27 @@ Reply to an existing support ticket.
 
 ---
 
+### whmcs_add_ticket_note
+
+Add an admin-only internal note to an existing ticket. Notes are **not visible to the client** and do **not trigger any email notification**.
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `ticketid` | number | Yes | Ticket ID to add the note to |
+| `message` | string | Yes | The note content |
+| `markdown` | boolean | No | Whether the message contains markdown formatting |
+
+**Example Response:**
+```json
+{
+  "result": "success"
+}
+```
+
+---
+
 ### whmcs_update_ticket
 
 Update ticket properties.

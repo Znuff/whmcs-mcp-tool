@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-03-11
+
+### Added
+
+#### Support Tickets
+- `whmcs_add_ticket_note` - Add an admin-only internal note to a ticket (not visible to client, no email notification)
+
 ## [1.2.0] - 2026-01-01
 
 ### Added
@@ -77,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `whmcs_get_ticket` - Get ticket details with replies
 - `whmcs_open_ticket` - Create new support tickets
 - `whmcs_add_ticket_reply` - Reply to tickets
+- `whmcs_add_ticket_note` - Add admin-only internal notes to tickets
 - `whmcs_update_ticket` - Update ticket properties
 - `whmcs_delete_ticket` - Delete tickets
 - `whmcs_get_support_departments` - List support departments
