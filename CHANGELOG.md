@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- `whmcs_get_invoices` - Add 'Overdue' status filter option
+
 ## [1.2.1] - 2026-03-11
 
 ### Added
