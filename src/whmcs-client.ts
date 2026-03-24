@@ -411,7 +411,7 @@ export class WhmcsApiClient {
         limitstart?: number;
         limitnum?: number;
         userid?: number;
-        status?: 'Paid' | 'Unpaid' | 'Cancelled' | 'Refunded' | 'Collections' | 'Draft';
+        status?: 'Paid' | 'Unpaid' | 'Cancelled' | 'Refunded' | 'Collections' | 'Draft' | 'Overdue';
         orderby?: string;
         order?: 'asc' | 'desc';
     } = {}) {

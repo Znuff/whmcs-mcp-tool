@@ -215,7 +215,7 @@ Get invoices with optional filtering.
 | `limitstart` | number | No | Starting offset |
 | `limitnum` | number | No | Number of results |
 | `userid` | number | No | Filter by client ID |
-| `status` | string | No | Filter by status: `Paid`, `Unpaid`, `Cancelled`, `Refunded`, `Collections`, `Draft` |
+| `status` | string | No | Filter by status: `Paid`, `Unpaid`, `Cancelled`, `Refunded`, `Collections`, `Draft`, `Overdue` |
 | `orderby` | string | No | Field to order by |
 | `order` | string | No | Sort order: `asc` or `desc` |
 

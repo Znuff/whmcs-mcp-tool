@@ -264,7 +264,7 @@ server.registerTool(
             limitstart: z.number().optional().describe('Starting offset'),
             limitnum: z.number().optional().describe('Number of results'),
             userid: z.number().optional().describe('Filter by client ID'),
-            status: z.enum(['Paid', 'Unpaid', 'Cancelled', 'Refunded', 'Collections', 'Draft']).optional().describe('Filter by status'),
+            status: z.enum(['Paid', 'Unpaid', 'Cancelled', 'Refunded', 'Collections', 'Draft', 'Overdue']).optional().describe('Filter by status'),
             orderby: z.string().optional().describe('Field to order by'),
             order: z.enum(['asc', 'desc']).optional().describe('Sort order'),
         },
