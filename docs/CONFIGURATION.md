@@ -88,6 +88,9 @@ WHMCS_ACCESS_KEY=
 | `WHMCS_API_IDENTIFIER` | Yes | The API credential identifier from WHMCS |
 | `WHMCS_API_SECRET` | Yes | The API credential secret from WHMCS |
 | `WHMCS_ACCESS_KEY` | No | Optional API access key for additional security |
+| `MCP_TRANSPORT` | No | Transport mode: `stdio` (default) or `http` |
+| `MCP_PORT` | No | HTTP port when `MCP_TRANSPORT=http` (default: `3000`) |
+| `MCP_AUTH_TOKEN` | No | Bearer token for HTTP auth when `MCP_TRANSPORT=http` |
 
 ### Setting Up the API Access Key (Optional)
 
@@ -190,6 +193,72 @@ console.log('API Request:', { action, params });
 console.log('API Response:', data);
 ```
 
+## Transport Modes
+
+### STDIO (Default)
+
+The default mode. The MCP client spawns the server as a child process and communicates over stdin/stdout. No network port is opened.
+
+```bash
+# Start in STDIO mode (default)
+npm start
+```
+
+### HTTP/SSE Mode
+
+Starts an HTTP server that speaks the MCP Streamable HTTP protocol. Useful for:
+- Remote deployments (Docker, cloud VMs) accessed by multiple clients
+- Clients that cannot spawn child processes
+- Container environments where a health check endpoint is needed
+
+```bash
+# Start in HTTP mode
+MCP_TRANSPORT=http MCP_PORT=3000 npm start
+```
+
+The server exposes two endpoints:
+- `POST /mcp` — MCP request endpoint
+- `GET /health` — Health check (`{"status":"ok","transport":"http"}`)
+
+#### Optional Bearer Token Auth
+
+```bash
+MCP_TRANSPORT=http MCP_AUTH_TOKEN=my-secret-token npm start
+```
+
+Clients must then send `Authorization: Bearer my-secret-token` on every request.
+
+#### Connecting via VS Code (HTTP mode)
+
+```json
+{
+    "servers": {
+        "whmcs-mcp-server-http": {
+            "type": "http",
+            "url": "http://localhost:3000/mcp"
+        }
+    }
+}
+```
+
+#### Docker HTTP Mode
+
+```bash
+docker run -p 3000:3000 \
+  -e WHMCS_API_URL=https://billing.example.com/ \
+  -e WHMCS_API_IDENTIFIER=your-identifier \
+  -e WHMCS_API_SECRET=your-secret \
+  -e MCP_TRANSPORT=http \
+  -e MCP_AUTH_TOKEN=my-secret-token \
+  whmcs-mcp-server
+```
+
+Or with Docker Compose:
+
+```bash
+docker compose --profile http up whmcs-mcp-server-http
+```
+
 ## VS Code Configuration
 
 The MCP server is pre-configured for VS Code in `.vscode/mcp.json`:
@@ -207,6 +276,10 @@ The MCP server is pre-configured for VS Code in `.vscode/mcp.json`:
                 "WHMCS_API_SECRET": "${env:WHMCS_API_SECRET}",
                 "WHMCS_ACCESS_KEY": "${env:WHMCS_ACCESS_KEY}"
             }
+        },
+        "whmcs-mcp-server-http": {
+            "type": "http",
+            "url": "http://localhost:3000/mcp"
         }
     }
 }

@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # STDIO mode (default) — client spawns this as a child process
   whmcs-mcp-server:
     build:
       context: .
@@ -12,14 +13,27 @@ services:
       - WHMCS_API_IDENTIFIER=${WHMCS_API_IDENTIFIER}
       - WHMCS_API_SECRET=${WHMCS_API_SECRET}
       - WHMCS_ACCESS_KEY=${WHMCS_ACCESS_KEY:-}
+      - MCP_TRANSPORT=stdio
     # For stdio-based MCP servers, we need stdin/stdout
     stdin_open: true
     tty: true
-    # Optional: Add network restrictions for security
-    # networks:
-    #   - mcp-network
 
-# Optional: Define custom network
-# networks:
-#   mcp-network:
-#     driver: bridge
+  # HTTP/SSE mode — exposes MCP over HTTP for remote clients
+  whmcs-mcp-server-http:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whmcs-mcp-server-http
+    restart: unless-stopped
+    environment:
+      - WHMCS_API_URL=${WHMCS_API_URL}
+      - WHMCS_API_IDENTIFIER=${WHMCS_API_IDENTIFIER}
+      - WHMCS_API_SECRET=${WHMCS_API_SECRET}
+      - WHMCS_ACCESS_KEY=${WHMCS_ACCESS_KEY:-}
+      - MCP_TRANSPORT=http
+      - MCP_PORT=3000
+      - MCP_AUTH_TOKEN=${MCP_AUTH_TOKEN:-}
+    ports:
+      - "3000:3000"
+    profiles:
+      - http

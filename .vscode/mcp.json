@@ -10,6 +10,10 @@
                 "WHMCS_API_SECRET": "${env:WHMCS_API_SECRET}",
                 "WHMCS_ACCESS_KEY": "${env:WHMCS_ACCESS_KEY}"
             }
+        },
+        "whmcs-mcp-server-http": {
+            "type": "http",
+            "url": "http://localhost:3000/mcp"
         }
     }
 }

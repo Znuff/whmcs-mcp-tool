@@ -7,8 +7,10 @@
  */
 
 import 'dotenv/config';
+import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import * as z from 'zod';
 import { WhmcsApiClient, WhmcsConfig } from './whmcs-client.js';
 
@@ -1947,9 +1949,44 @@ async function main() {
         console.error('Warning: WHMCS configuration incomplete. Tools will not function until configured.');
     }
 
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error('WHMCS MCP Server started');
+    const transportMode = process.env.MCP_TRANSPORT ?? 'stdio';
+
+    if (transportMode === 'http') {
+        const port = parseInt(process.env.MCP_PORT ?? '3000', 10);
+        const authToken = process.env.MCP_AUTH_TOKEN || undefined;
+
+        const httpTransport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined, // stateless mode — appropriate for stateless WHMCS API calls
+        });
+
+        const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+            if (authToken) {
+                const auth = req.headers['authorization'];
+                if (auth !== `Bearer ${authToken}`) {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Unauthorized' }));
+                    return;
+                }
+            }
+
+            if (req.method === 'GET' && req.url === '/health') {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ status: 'ok', transport: 'http' }));
+                return;
+            }
+
+            await httpTransport.handleRequest(req, res);
+        });
+
+        await server.connect(httpTransport);
+        httpServer.listen(port, () => {
+            console.error(`WHMCS MCP Server started (HTTP/SSE) on port ${port}`);
+        });
+    } else {
+        const transport = new StdioServerTransport();
+        await server.connect(transport);
+        console.error('WHMCS MCP Server started (stdio)');
+    }
 }
 
 main().catch((error) => {

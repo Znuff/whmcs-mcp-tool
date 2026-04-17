@@ -46,10 +46,15 @@ ENV WHMCS_API_URL=""
 ENV WHMCS_API_IDENTIFIER=""
 ENV WHMCS_API_SECRET=""
 ENV WHMCS_ACCESS_KEY=""
+ENV MCP_TRANSPORT="stdio"
+ENV MCP_PORT="3000"
+ENV MCP_AUTH_TOKEN=""
 
-# Health check - verify node process is running
+EXPOSE 3000
+
+# Health check (active when MCP_TRANSPORT=http)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "console.log('healthy')" || exit 1
+    CMD node -e "require('http').get('http://localhost:' + (process.env.MCP_PORT||3000) + '/health', r => process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))" || exit 1
 
 # Run the MCP server
 CMD ["node", "dist/index.js"]
