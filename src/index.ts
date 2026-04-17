@@ -1979,7 +1979,7 @@ async function main() {
         });
 
         await server.connect(httpTransport);
-        httpServer.listen(port, () => {
+        httpServer.listen(port, '0.0.0.0', () => {
             console.error(`WHMCS MCP Server started (HTTP/SSE) on port ${port}`);
         });
     } else {
