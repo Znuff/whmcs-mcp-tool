@@ -253,10 +253,10 @@ docker run -p 3000:3000 \
   whmcs-mcp-server
 ```
 
-Or with Docker Compose:
+Or with Docker Compose (set `MCP_TRANSPORT=http` in your `.env`):
 
 ```bash
-docker compose --profile http up whmcs-mcp-server-http
+docker compose up whmcs-mcp-server
 ```
 
 ## VS Code Configuration
