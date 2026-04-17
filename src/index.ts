@@ -1955,10 +1955,6 @@ async function main() {
         const port = parseInt(process.env.MCP_PORT ?? '3000', 10);
         const authToken = process.env.MCP_AUTH_TOKEN || undefined;
 
-        const httpTransport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: undefined, // stateless mode — appropriate for stateless WHMCS API calls
-        });
-
         const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
             if (authToken) {
                 const auth = req.headers['authorization'];
@@ -1975,10 +1971,16 @@ async function main() {
                 return;
             }
 
-            await httpTransport.handleRequest(req, res);
+            // Stateless mode: fresh transport per request so _hasHandledRequest never blocks reuse
+            const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+            await server.connect(transport);
+            try {
+                await transport.handleRequest(req, res);
+            } finally {
+                await transport.close();
+            }
         });
 
-        await server.connect(httpTransport);
         httpServer.listen(port, '0.0.0.0', () => {
             console.error(`WHMCS MCP Server started (HTTP/SSE) on port ${port}`);
         });
